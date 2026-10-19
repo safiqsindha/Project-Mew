@@ -1,0 +1,64 @@
+{
+ "n_scored": 2351,
+ "n_expected": 2351,
+ "complete": true,
+ "per_category": {
+  "irrelevance": {
+   "n": 240,
+   "acc": 0.7958333333333333,
+   "parse_rate": 0.20416666666666666
+  },
+  "live_irrelevance": {
+   "n": 884,
+   "acc": 0.8269230769230769,
+   "parse_rate": 0.17307692307692307
+  },
+  "live_multiple": {
+   "n": 1053,
+   "acc": 0.4795821462488129,
+   "parse_rate": 0.8043684710351378
+  },
+  "live_parallel": {
+   "n": 16,
+   "acc": 0.6875,
+   "parse_rate": 0.8125
+  },
+  "live_parallel_multiple": {
+   "n": 24,
+   "acc": 0.4583333333333333,
+   "parse_rate": 0.75
+  },
+  "live_simple": {
+   "n": 258,
+   "acc": 0.5271317829457365,
+   "parse_rate": 0.7829457364341085
+  },
+  "multiple": {
+   "n": 200,
+   "acc": 0.575,
+   "parse_rate": 0.725
+  },
+  "parallel": {
+   "n": 200,
+   "acc": 0.35,
+   "parse_rate": 0.55
+  },
+  "parallel_multiple": {
+   "n": 200,
+   "acc": 0.475,
+   "parse_rate": 0.67
+  },
+  "simple_python": {
+   "n": 400,
+   "acc": 0.6925,
+   "parse_rate": 0.835
+  }
+ },
+ "pooled_ast_acc": 0.5189281156954487,
+ "parse_rate": 0.7669076988515525,
+ "gate_agentic": {
+  "parse_rate": 0.7669076988515525,
+  "pooled_ast_acc": 0.5189281156954487,
+  "pass": true
+ }
+}

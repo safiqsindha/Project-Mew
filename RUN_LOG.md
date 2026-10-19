@@ -44,3 +44,11 @@ Append-only record of everything executed: when, with what config, what came out
 ## 2026-10-19 — Rung-0 baselines launched
 
 - Kernel `mew-rung0-baseline` at freeze commit cfc1ea1294a70b24d10421083466b5b402459aa6: GPU0 `baseline_logic` (Qwen3.5-0.8B-Base @ dc7cdfe2, JustLogic primary n=6,927); GPU1 `baseline_agentic` (Qwen3.5-0.8B @ 2fc06364, BFCL 2,351 scored + 1,124 irrelevance).
+
+## 2026-10-19 — Rung-0 baseline results (kernel `mew-rung0-baseline`, harness cfc1ea1)
+
+- Both jobs completed with every item (logic 6,927; BFCL 3,475). Wall-clock 4,991 s / 8,993 s. Outputs in `results/rung0/`.
+- **G-Logic: FAIL.** Depths 1-2 pooled n=1,977, accuracy 0.3617 (715 correct) vs threshold 0.392 (majority 0.342 + 0.05); one-sided exact binomial p=0.035. Above chance, below the pre-registered margin. Per-depth accuracy .351/.373/.334/.340/.346/.374/.357 for depths 1-7 (majority .334-.363). Model answers TRUE for 83% of depth-1 items, never UNCERTAIN; 0 parse failures.
+- **G-Agentic: PASS.** Pooled AST accuracy 0.519, parse rate 0.767 (needs >=0.05 / >=0.10).
+- Consequence per PREREGISTRATION.md §7: ProofWriter QDep 1-2 fallback to be run for the Logic target. Not yet started; its item list, few-shot examples and prompt must be frozen and hashed first (amendment to follow).
+- Results not yet pushed to GitHub (awaiting author's decision).

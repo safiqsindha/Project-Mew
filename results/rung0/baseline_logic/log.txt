@@ -1,0 +1,57 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/320 [00:00<?, ?it/s]Loading weights:   0%|          | 1/320 [00:01<07:36,  1.43s/it]Loading weights: 100%|██████████| 320/320 [00:01<00:00, 221.49it/s]
+{
+ "task": "justlogic",
+ "items": "primary",
+ "n_items": 6927,
+ "model": "Qwen/Qwen3.5-0.8B-Base",
+ "revision": "dc7cdfe2ee4154fa7e30f5b51ca41bfa40174e68",
+ "adapter": null,
+ "dtype": "fp32",
+ "batch_size": 16,
+ "generation": {
+  "max_new_tokens": 8,
+  "do_sample": false,
+  "stop": "first newline (applied at parse)",
+  "prompt": "JustLogic eval/prompt_3_shot.txt @ cdcd470e, trailing whitespace stripped",
+  "options": {
+   "TRUE": " TRUE",
+   "FALSE": " FALSE",
+   "UNCERTAIN": " UNCERTAIN"
+  }
+ },
+ "model_class": "Qwen3_5ForCausalLM",
+ "torch": "2.11.0+cu128",
+ "transformers": "5.17.0",
+ "python": "3.13.15",
+ "gpu": "Tesla T4",
+ "started_utc": "2026-10-19T20:03:43Z"
+}
+[transformers] `causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+[transformers] `chunk_gated_delta_rule` is falling back to its reference PyTorch implementation because `flash-linear-attention` is not installed. This is correct but much slower; install `flash-linear-attention` for the optimized kernel.
+[transformers] `causal_conv1d_update` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+[transformers] `fused_recurrent_gated_delta_rule` is falling back to its reference PyTorch implementation because `flash-linear-attention` is not installed. This is correct but much slower; install `flash-linear-attention` for the optimized kernel.
+  16/6927 items, 18s elapsed, 1.12s/item
+  336/6927 items, 330s elapsed, 0.98s/item
+  656/6927 items, 622s elapsed, 0.95s/item
+  976/6927 items, 899s elapsed, 0.92s/item
+  1296/6927 items, 1164s elapsed, 0.90s/item
+  1616/6927 items, 1426s elapsed, 0.88s/item
+  1936/6927 items, 1684s elapsed, 0.87s/item
+  2256/6927 items, 1934s elapsed, 0.86s/item
+  2576/6927 items, 2179s elapsed, 0.85s/item
+  2896/6927 items, 2417s elapsed, 0.83s/item
+  3216/6927 items, 2654s elapsed, 0.83s/item
+  3536/6927 items, 2877s elapsed, 0.81s/item
+  3856/6927 items, 3097s elapsed, 0.80s/item
+  4176/6927 items, 3309s elapsed, 0.79s/item
+  4496/6927 items, 3518s elapsed, 0.78s/item
+  4816/6927 items, 3718s elapsed, 0.77s/item
+  5136/6927 items, 3917s elapsed, 0.76s/item
+  5456/6927 items, 4110s elapsed, 0.75s/item
+  5776/6927 items, 4299s elapsed, 0.74s/item
+  6096/6927 items, 4482s elapsed, 0.74s/item
+  6416/6927 items, 4658s elapsed, 0.73s/item
+  6736/6927 items, 4832s elapsed, 0.72s/item
+  6927/6927 items, 4931s elapsed, 0.71s/item
+done 4930.7 s

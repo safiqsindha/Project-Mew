@@ -1,0 +1,16 @@
+{
+ "commit": "cfc1ea1294a70b24d10421083466b5b402459aa6",
+ "status": {
+  "baseline_logic": {
+   "rc": 0,
+   "wall_s": 4991.3,
+   "gpu": 0
+  },
+  "baseline_agentic": {
+   "rc": 0,
+   "wall_s": 8993.1,
+   "gpu": 1
+  }
+ },
+ "total_wall_s": 9013.7
+}
