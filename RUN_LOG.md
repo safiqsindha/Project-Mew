@@ -21,3 +21,4 @@ Append-only record of everything executed: when, with what config, what came out
 - PREREGISTRATION.md locked at commit `e91e422b5631f653522728075725f69f56bc1f0b` (pushed: no).
 - Manifests: justlogic_primary.csv sha256 da56c67f…913f92; justlogic_dev.csv sha256 cad26f4c…41ded9.
 - No eval or training numbers produced.
+- Pushed to origin/main 2026-10-19; GitHub records lock commit e91e422 at 2026-10-19T18:52:05Z.
