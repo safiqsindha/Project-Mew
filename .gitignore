@@ -1,0 +1,15 @@
+# Raw chain corpus (440 MB) and derived SFT data — tracked by hash manifest, not committed
+data/local/
+data/sft/
+# Model artifacts and run outputs
+checkpoints/
+outputs/raw/
+*.safetensors
+*.bin
+# Secrets
+.env
+kaggle.json
+# Python
+__pycache__/
+*.pyc
+.venv/
