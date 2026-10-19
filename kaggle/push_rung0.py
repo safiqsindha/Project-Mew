@@ -39,7 +39,7 @@ def main():
     ap.add_argument("--build", type=Path, required=True)
     a = ap.parse_args()
     a.build.mkdir(parents=True, exist_ok=True)
-    slug = f"mew-rung0-{a.mode}"
+    slug = f"mew-rung0-{a.mode}".replace("_", "-")
     body = (Path(__file__).parent / "kernel_rung0.py").read_text()
     body = body.replace("__COMMIT__", a.commit).replace("__LANES__", json.dumps(lanes(a.mode, a.dtype)))
     (a.build / f"{slug}.py").write_text(body)
