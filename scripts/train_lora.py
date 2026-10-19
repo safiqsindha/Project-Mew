@@ -23,8 +23,12 @@ MODELS = {  # pinned revisions (PREREGISTRATION.md §2)
     "agentic": ("Qwen/Qwen3.5-0.8B", "2fc06364715b967f1860aea9cf38778875588b17"),
 }
 LORA = dict(r=16, lora_alpha=32, lora_dropout=0.05, bias="none", task_type="CAUSAL_LM",
-            target_modules=r"^model\.language_model\.layers\.\d+\.(self_attn\.(q|k|v|o)_proj"
+            # Registered regex (PREREGISTRATION.md §5) names checkpoint keys "model.language_model.layers…";
+            # the text-only Qwen3_5ForCausalLM exposes the same modules as "model.layers…", so the
+            # "language_model." segment is optional. The matched set is asserted below (150 modules).
+            target_modules=r"^model\.(language_model\.)?layers\.\d+\.(self_attn\.(q|k|v|o)_proj"
                            r"|linear_attn\.(in_proj_qkv|in_proj_z|out_proj)|mlp\.(gate|up|down)_proj)$")
+EXPECTED_LORA_MODULES = 6 * 4 + 18 * 3 + 24 * 3  # full-attn q/k/v/o + linear-attn qkv/z/out + mlp gate/up/down
 HP = dict(learning_rate=2e-4, lr_scheduler_type="cosine", warmup_ratio=0.03, weight_decay=0.0,
           per_device_train_batch_size=4, gradient_accumulation_steps=4, num_train_epochs=2)
 MAX_LEN = 1536
@@ -90,6 +94,9 @@ def main():
 
     # fp32 master weights; fp16 autocast for compute (T4 has no native bf16). LoRA weights stay fp32.
     model = AutoModelForCausalLM.from_pretrained(model_id, revision=rev, dtype=torch.float32)
+    import re
+    matched = [n for n, _ in model.named_modules() if re.match(LORA["target_modules"], n)]
+    assert len(matched) == EXPECTED_LORA_MODULES, (len(matched), matched[:5])
     model = get_peft_model(model, LoraConfig(**LORA))
     n_lora = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
@@ -102,7 +109,7 @@ def main():
                       data_collator=Collator(tok.pad_token_id))
 
     meta = {"target": a.target, "arm": a.arm, "seed": a.seed, "model": model_id, "revision": rev,
-            "lora": LORA, "hp": HP, "precision": a.precision, "max_len": MAX_LEN, "n_lora_params": n_lora,
+            "lora": LORA, "lora_modules_matched": len(matched), "hp": HP, "precision": a.precision, "max_len": MAX_LEN, "n_lora_params": n_lora,
             "n_train": len(data["train"]), "n_monitor": len(data["monitor"]),
             "n_train_target_tokens": sum(sum(l != -100 for l in d["labels"]) for d in data["train"]),
             "torch": torch.__version__, "transformers": version("transformers"), "peft": version("peft"),
