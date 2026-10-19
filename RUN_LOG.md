@@ -39,3 +39,8 @@ Append-only record of everything executed: when, with what config, what came out
 
 - **Harness frozen at the commit that adds this entry** (hash recorded in the next entry). From here on, any harness change needs a dated PREREGISTRATION amendment and a re-run on every checkpoint of the affected target.
 - Frozen eval config: fp32; JustLogic batch 16, max_new_tokens 8; BFCL batch 8, max_new_tokens 512, enable_thinking=False; transformers 5.17.0 (pip) on Kaggle image sha256:2757e0c7…; PyTorch reference path for gated-delta-rule layers (flash-linear-attention not installed) for every arm; Tesla T4.
+- Harness freeze commit: `cfc1ea1294a70b24d10421083466b5b402459aa6`.
+
+## 2026-10-19 — Rung-0 baselines launched
+
+- Kernel `mew-rung0-baseline` at freeze commit cfc1ea1294a70b24d10421083466b5b402459aa6: GPU0 `baseline_logic` (Qwen3.5-0.8B-Base @ dc7cdfe2, JustLogic primary n=6,927); GPU1 `baseline_agentic` (Qwen3.5-0.8B @ 2fc06364, BFCL 2,351 scored + 1,124 irrelevance).
