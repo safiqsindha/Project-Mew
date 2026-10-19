@@ -59,3 +59,5 @@ Append-only record of everything executed: when, with what config, what came out
 - PREREGISTRATION Amendment A1 appended (locked text untouched): official ProofWriter V2020.12.3 OWA/depth-2 meta-test QDep 1-2, n=10,158; gate p0=0.353, threshold 0.403; Rung-1 bootstrap clusters by theory.
 - Fallback harness added: `mew/proofwriter.py`, `scripts/build_proofwriter_manifest.py`, task `proofwriter` in `run_eval.py`/`score.py` (same generation config, parser and scorers as JustLogic). Frozen: primary manifest de81163b…1b13f8, dev f01f8168…01c5, prompt 6bd414db…925adb.
 - Next: smoke on the 70 dev items (fp32 b16 vs b1), then the Base baseline on the primary set.
+- Smoke (`mew-rung0-smoke-pw`, commit 0cc302f): ProofWriter dev OK. fp32 b1 vs b16 identical (20/20 completions, 20/20 rank preds), 0/70 parse failures, 0.60 s/item. Dev accuracy not inspected. **Fallback harness frozen at 0cc302f.**
+- Launched `mew-rung0-baseline-pw` at 0cc302f: Qwen3.5-0.8B-Base @ dc7cdfe2 on the ProofWriter primary set (n=10,158), fp32, batch 16. Expected ~1.7 h.
