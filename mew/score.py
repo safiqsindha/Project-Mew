@@ -1,6 +1,7 @@
 """Offline scoring from raw completions (no GPU). Run in the scoring venv (bfcl-eval==2026.3.23).
 
   python -m mew.score justlogic outputs/raw/<run>   [--manifest data/manifests/justlogic_primary.csv]
+  python -m mew.score proofwriter outputs/raw/<run>   [--manifest data/manifests/proofwriter_dev.csv]
   python -m mew.score bfcl outputs/raw/<run>
 
 Writes <run>/scored.jsonl (per item) and <run>/summary.json, and prints the summary.
@@ -78,6 +79,54 @@ def score_justlogic(run: Path, manifest: Path) -> dict:
     return summary
 
 
+def score_proofwriter(run: Path, manifest: Path) -> dict:
+    """ProofWriter fallback (Amendment A1): same parser/scorers as JustLogic, strata = QDep."""
+    from scipy.stats import binomtest
+
+    from mew.justlogic import parse_answer
+
+    recs = _read(run)
+    man = list(csv.DictReader(open(manifest)))
+    rows = []
+    for m in man:
+        r = recs.get(m["uid"])
+        if r is None:
+            continue
+        pred = parse_answer(r["completion"])
+        lp = r.get("option_logprobs")
+        rank = max(lp, key=lp.get) if lp else None
+        rows.append({"uid": m["uid"], "theory_id": m["theory_id"], "qdep": int(m["qdep"]), "label": m["label"],
+                     "pred": pred, "correct": int(pred == m["label"]), "parse_fail": int(pred is None),
+                     "rank_pred": rank, "rank_correct": int(rank == m["label"]) if rank else None})
+    with open(run / "scored.jsonl", "w") as fh:
+        for row in rows:
+            fh.write(json.dumps(row) + "\n")
+
+    def block(rs):
+        n = len(rs)
+        maj = max(sum(r["label"] == lab for r in rs) for lab in ("TRUE", "FALSE", "UNCERTAIN")) / n
+        out = {"n": n, "acc": sum(r["correct"] for r in rs) / n, "majority_rate": maj,
+               "parse_fail_rate": sum(r["parse_fail"] for r in rs) / n,
+               "pred_dist": {k: sum(r["pred"] == k for r in rs) / n for k in ("TRUE", "FALSE", "UNCERTAIN", None)}}
+        if rs and rs[0]["rank_correct"] is not None:
+            out["rank_acc"] = sum(r["rank_correct"] for r in rs) / n
+        return out
+
+    summary = {"n_scored": len(rows), "n_manifest": len(man), "complete": len(rows) == len(man),
+               "per_qdep": {q: block([r for r in rows if r["qdep"] == q]) for q in (1, 2)
+                            if any(r["qdep"] == q for r in rows)}}
+    if rows:
+        b = block(rows)
+        k = sum(r["correct"] for r in rows)
+        p0 = round(b["majority_rate"], 3)
+        p = binomtest(k, len(rows), p0, alternative="greater").pvalue
+        summary["gate_logic_fallback"] = {"n": len(rows), "correct": k, "acc": b["acc"], "p0": p0,
+                                          "threshold": round(p0 + 0.05, 3), "binom_p_one_sided": p,
+                                          "pass": bool(b["acc"] >= p0 + 0.05 and p < 0.05)}
+    (run / "summary.json").write_text(json.dumps(summary, indent=1))
+    return summary
+
+
 def score_bfcl(run: Path) -> dict:
     from bfcl_eval.constants.enums import Language
     from bfcl_eval.eval_checker.ast_eval.ast_checker import ast_checker
@@ -141,11 +190,17 @@ def score_bfcl(run: Path) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("task", choices=["justlogic", "bfcl"])
+    ap.add_argument("task", choices=["justlogic", "proofwriter", "bfcl"])
     ap.add_argument("run", type=Path)
     ap.add_argument("--manifest", type=Path, default=ROOT / "data/manifests/justlogic_primary.csv")
     a = ap.parse_args()
-    s = score_justlogic(a.run, a.manifest) if a.task == "justlogic" else score_bfcl(a.run)
+    if a.task == "justlogic":
+        s = score_justlogic(a.run, a.manifest)
+    elif a.task == "proofwriter":
+        m = a.manifest if a.manifest.name.startswith("proofwriter") else ROOT / "data/manifests/proofwriter_primary.csv"
+        s = score_proofwriter(a.run, m)
+    else:
+        s = score_bfcl(a.run)
     print(json.dumps(s, indent=1))
 
 

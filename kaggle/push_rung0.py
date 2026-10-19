@@ -23,6 +23,12 @@ def lanes(mode: str, dtype: str):
     if mode == "smoke_jl":  # re-run of the JustLogic smoke jobs only
         jl = lanes("smoke", dtype)[0]
         return [[jl[0], jl[2]], [jl[1]]]
+    if mode == "smoke_pw":  # dev items only; precision/batch checks as for JustLogic
+        pw = ["--task", "proofwriter", "--items", "dev", *BASE]
+        return [[{"name": "smoke_pw_fp32_b16", "args": [*pw, "--dtype", "fp32", "--batch-size", "16"]},
+                 {"name": "smoke_pw_fp32_b1", "args": [*pw, "--dtype", "fp32", "--batch-size", "1", "--limit", "20"]}]]
+    if mode == "baseline_pw":  # Logic fallback (Amendment A1); one GPU, ~1.5 h
+        return [[{"name": "baseline_logic_pw", "args": ["--task", "proofwriter", "--items", "primary", *BASE, "--dtype", dtype, "--batch-size", "16"]}]]
     if mode == "baseline":
         return [
             [{"name": "baseline_logic", "args": ["--task", "justlogic", "--items", "primary", *BASE, "--dtype", dtype, "--batch-size", "16"]}],
@@ -33,7 +39,7 @@ def lanes(mode: str, dtype: str):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["smoke", "smoke_jl", "baseline"], required=True)
+    ap.add_argument("--mode", choices=["smoke", "smoke_jl", "smoke_pw", "baseline", "baseline_pw"], required=True)
     ap.add_argument("--commit", required=True)
     ap.add_argument("--dtype", default="fp32")
     ap.add_argument("--build", type=Path, required=True)

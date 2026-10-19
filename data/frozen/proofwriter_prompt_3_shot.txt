@@ -1,0 +1,40 @@
+You are given a paragraph of facts and rules, followed by a statement. Perform logical reasoning on the paragraph to determine the truth value of the statement.
+
+You must answer with either one of the 3 options:
+- TRUE: When the premises in the paragraph lead to the statement
+- FALSE: When the premises in the paragraph directly contradict the statement
+- UNCERTAIN: When the premises in the paragraph neither support nor contradict the statement
+
+Do not use your prior knowledge; your answer must be solely determined by the information within the paragraph. Assume that all premises in the paragraph are true.
+
+Question: Is the statement true, false, or uncertain?
+
+Output only "TRUE", "FALSE", or "UNCERTAIN". Do not generate anything else.
+-----
+
+Paragraph: The bald eagle visits the rabbit. The cat eats the rabbit. The cat sees the tiger. The rabbit does not eat the bald eagle. The rabbit eats the tiger. The rabbit is big. The rabbit is not cold. The rabbit is rough. The rabbit is young. The rabbit sees the cat. The rabbit visits the bald eagle. The rabbit does not visit the tiger. The tiger eats the cat. The tiger sees the bald eagle. The tiger does not visit the bald eagle. If something eats the rabbit then it sees the tiger. If something visits the cat then it is not rough. If the tiger is young and the tiger eats the bald eagle then the tiger does not visit the bald eagle. If the tiger sees the bald eagle then the tiger visits the cat. If something visits the bald eagle and it is not rough then it eats the cat. If something eats the cat and it does not eat the bald eagle then the cat is not young.
+
+Statement: The tiger is not rough.
+
+Answer: TRUE
+-----
+
+Paragraph: Anne is nice. Anne is smart. Dave is kind. Dave is nice. Dave is round. Fiona is smart. Harry is green. If Anne is nice then Anne is smart. If something is nice and green then it is red. Nice things are round. Smart things are green. All round, nice things are red. If something is smart and round then it is red.
+
+Statement: Fiona is not green.
+
+Answer: FALSE
+-----
+
+Paragraph: Anne is blue. Erin is kind. Harry is cold. Kind things are quiet. If Anne is big then Anne is nice. All big things are nice. If Erin is quiet and Erin is nice then Erin is furry. If Anne is big and Anne is blue then Anne is nice. If Anne is kind and Anne is blue then Anne is cold. If Harry is blue and Harry is cold then Harry is nice. Blue things are big.
+
+Statement: Erin is big.
+
+Answer: UNCERTAIN
+-----
+
+Paragraph: {PARAGRAPH}
+
+Statement: {STATEMENT}
+
+Answer: 

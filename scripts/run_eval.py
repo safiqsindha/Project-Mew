@@ -16,12 +16,15 @@ sys.path.insert(0, str(ROOT))
 
 import torch  # noqa: E402
 
-from mew import bfcl, generate, justlogic  # noqa: E402
+from mew import bfcl, generate, justlogic, proofwriter  # noqa: E402
 
 GEN = {  # frozen generation configs (PREREGISTRATION.md §6)
     "justlogic": {"max_new_tokens": 8, "do_sample": False, "stop": "first newline (applied at parse)",
                   "prompt": "JustLogic eval/prompt_3_shot.txt @ cdcd470e, trailing whitespace stripped",
                   "options": justlogic.OPTIONS},
+    "proofwriter": {"max_new_tokens": 8, "do_sample": False, "stop": "first newline (applied at parse)",
+                    "prompt": "data/frozen/proofwriter_prompt_3_shot.txt, trailing whitespace stripped",
+                    "options": justlogic.OPTIONS},
     "bfcl": {"max_new_tokens": 512, "do_sample": False, "stop": "eos",
              "prompt": "model chat template, tools=frozen item tools, enable_thinking=False"},
 }
@@ -29,8 +32,8 @@ GEN = {  # frozen generation configs (PREREGISTRATION.md §6)
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--task", choices=["justlogic", "bfcl"], required=True)
-    ap.add_argument("--items", default="primary", help="justlogic: primary|dev; bfcl: all|scored|dev")
+    ap.add_argument("--task", choices=["justlogic", "proofwriter", "bfcl"], required=True)
+    ap.add_argument("--items", default="primary", help="justlogic/proofwriter: primary|dev; bfcl: all|scored|dev")
     ap.add_argument("--model", required=True)
     ap.add_argument("--revision", required=True)
     ap.add_argument("--adapter", default=None)
@@ -47,6 +50,11 @@ def main():
         items = justlogic.load_items(a.cache, ROOT / f"data/manifests/justlogic_{a.items}.csv")
         template = justlogic.fetch_sources(a.cache)["prompt_3_shot.txt"].read_text()
         prompts = {it["uid"]: justlogic.build_prompt(template, it) for it in items}
+        options = justlogic.OPTIONS
+    elif a.task == "proofwriter":
+        items = proofwriter.load_items(a.cache, ROOT / f"data/manifests/proofwriter_{a.items}.csv")
+        template = (ROOT / "data/frozen/proofwriter_prompt_3_shot.txt").read_text()
+        prompts = {it["uid"]: proofwriter.build_prompt(template, it) for it in items}
         options = justlogic.OPTIONS
     else:
         src = "bfcl_dev_items.jsonl" if a.items == "dev" else "bfcl_items.jsonl"

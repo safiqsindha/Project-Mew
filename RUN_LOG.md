@@ -52,3 +52,10 @@ Append-only record of everything executed: when, with what config, what came out
 - **G-Agentic: PASS.** Pooled AST accuracy 0.519, parse rate 0.767 (needs >=0.05 / >=0.10).
 - Consequence per PREREGISTRATION.md §7: ProofWriter QDep 1-2 fallback to be run for the Logic target. Not yet started; its item list, few-shot examples and prompt must be frozen and hashed first (amendment to follow).
 - Results not yet pushed to GitHub (awaiting author's decision).
+
+## 2026-10-19 — Logic fallback: Amendment A1
+
+- Registered fallback file (JustLogic-redistributed ProofWriter meta-test) found degenerate: depth-0 theories, all 3,205 QDep 1-2 questions labelled Unknown → unpassable gate. Author chose the official-release replacement (and set a standing instruction: default to Claude's recommendations, logging each).
+- PREREGISTRATION Amendment A1 appended (locked text untouched): official ProofWriter V2020.12.3 OWA/depth-2 meta-test QDep 1-2, n=10,158; gate p0=0.353, threshold 0.403; Rung-1 bootstrap clusters by theory.
+- Fallback harness added: `mew/proofwriter.py`, `scripts/build_proofwriter_manifest.py`, task `proofwriter` in `run_eval.py`/`score.py` (same generation config, parser and scorers as JustLogic). Frozen: primary manifest de81163b…1b13f8, dev f01f8168…01c5, prompt 6bd414db…925adb.
+- Next: smoke on the 70 dev items (fp32 b16 vs b1), then the Base baseline on the primary set.

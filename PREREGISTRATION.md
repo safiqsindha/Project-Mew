@@ -227,4 +227,27 @@ GRPO/RL; SpreadsheetBench, Cybench, physics QA; large-model fine-tunes; overseer
 
 ## Amendments
 
-_(none)_
+### A1 — 2026-10-19 — Logic fallback source replaced (ProofWriter official OWA depth-2)
+
+**Trigger:** Rung-0 gate G-Logic failed. On JustLogic depths 1–2 pooled (n = 1,977), Base accuracy was 0.362 against a threshold of 0.392 (one-sided binomial p = 0.035 against 0.342). Details in `results/rung0/`. This was decided by the pre-registered rule before the fallback was examined.
+
+**Problem with the registered fallback:** §6.1 named `pki_eval/proofwriter-meta-test.jsonl` from the JustLogic repo (commit `cdcd470e`). On inspection it holds ProofWriter *depth-0* theories, and **all 3,205 of its QDep 1–2 questions are labelled Unknown**. The majority rate is therefore 1.0 and the gate is unpassable by construction. The file is also not byte-identical to the official depth-0 test file. It cannot serve as the fallback as written.
+
+**Replacement (approved by the author before any fallback run):**
+- **Source:** official AllenAI ProofWriter release V2020.12.3 (`https://aristo-data-public.s3.amazonaws.com/proofwriter/proofwriter-dataset-V2020.12.3.zip`, sha256 `bbc5694901e8306d0bd659aa1ad53ccfd02c201864f4b320ffa3777827d1fc26`). File `OWA/depth-2/meta-test.jsonl`, all questions with QDep ∈ {1, 2}.
+- **Primary set:** n = 10,158 (QDep 1: 6,079, majority .410; QDep 2: 4,079, majority .440), from 1,794 theories. Frozen as `data/manifests/proofwriter_primary.csv` (sha256 `de81163b3f845c146cac924a302649dde6f7d0430b3edc48e55ab9c9cb1b13f8`). No theory overlaps the train split.
+- **Dev slice:** 70 `meta-dev` items (35 per QDep, `random.Random(0)`), `data/manifests/proofwriter_dev.csv` (sha256 `f01f8168c131a662fb160a862055a61efd39f53a8350b54bf438beae248001c5`). Harness development only.
+- **Prompt:** `data/frozen/proofwriter_prompt_3_shot.txt` (sha256 `6bd414dbdea7eb8a2b7f6936571088a9f266bd9f1616b31637e9046298925adb`). This is the JustLogic 3-shot wording with the propositional argument-form list removed, since it doesn't apply to rule theories.
+  - Three shots, one per label, drawn with `random.Random(0)` from `meta-train` QDep 1–2, from distinct theories: `RelNeg-OWA-D2-882:Q5` (TRUE), `AttNoneg-OWA-D2-1444:Q4` (FALSE), `AttNoneg-OWA-D2-571:Q8` (UNCERTAIN).
+  - Labels map True/False/Unknown → TRUE/FALSE/UNCERTAIN.
+  - Generation config, parser, rank-classification scorer, fp32 and batch size are all unchanged from the frozen JustLogic harness. Builder: `scripts/build_proofwriter_manifest.py`.
+- **Gate (replaces the §7 fallback sentence):** pooled QDep 1–2 (n = 10,158; pooled majority rate p₀ = 0.353). **Pass** iff Base primary-scorer accuracy ≥ **0.403** **and** a one-sided exact binomial test against 0.353 gives p < 0.05. Reported per QDep regardless. On fail, the Logic target does not proceed to Rung 1.
+
+**If the gate passes, Rung-1 Logic target = this ProofWriter set** (JustLogic is not evaluated in Rung 1):
+- Strata are QDep ∈ {1, 2}, replacing depth.
+- Questions from the same theory are not independent (true/negated pairs share a theory). The §8 bootstrap therefore resamples **theories** with replacement within each QDep stratum, taking all of a resampled theory's items, instead of resampling items.
+- All other §8 rules stand: seed resampling, Holm across the four tests, the H2 seed-pair condition, and the null definitions.
+- Power is lower than item-level n suggests because of the clustering. It will be reported from the realised design effect.
+
+**Unaffected:** everything for the Agentic target, which passed G-Agentic (pooled AST accuracy 0.519, parse rate 0.767).
+
