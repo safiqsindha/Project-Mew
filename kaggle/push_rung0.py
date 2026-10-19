@@ -20,6 +20,9 @@ def lanes(mode: str, dtype: str):
              {"name": "smoke_bfcl_fp16_b8", "args": ["--task", "bfcl", "--items", "dev", *INSTRUCT, "--dtype", "fp16", "--batch-size", "8"]},
              {"name": "smoke_bfcl_fp32_b1", "args": ["--task", "bfcl", "--items", "dev", *INSTRUCT, "--dtype", "fp32", "--batch-size", "1", "--limit", "10"]}],
         ]
+    if mode == "smoke_jl":  # re-run of the JustLogic smoke jobs only
+        jl = lanes("smoke", dtype)[0]
+        return [[jl[0], jl[2]], [jl[1]]]
     if mode == "baseline":
         return [
             [{"name": "baseline_logic", "args": ["--task", "justlogic", "--items", "primary", *BASE, "--dtype", dtype, "--batch-size", "16"]}],
@@ -30,7 +33,7 @@ def lanes(mode: str, dtype: str):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["smoke", "baseline"], required=True)
+    ap.add_argument("--mode", choices=["smoke", "smoke_jl", "baseline"], required=True)
     ap.add_argument("--commit", required=True)
     ap.add_argument("--dtype", default="fp32")
     ap.add_argument("--build", type=Path, required=True)

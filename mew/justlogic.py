@@ -9,12 +9,13 @@ REPO = "https://raw.githubusercontent.com/michaelchen-lab/JustLogic"
 SOURCES = {
     # name: (commit, repo path, sha256)
     "train_dataset.csv": ("5d21f08f", "dataset/train_dataset.csv",
-                          "e2df49c6f8a8da22173afe6ea291e20de053983a3c2ac54b97b6419e6df26226"),
+                          "bb11dacd9bd7a377526062072d6a81512b5a52ed9de7952cf6ba4ac9def64a7c"),
     "validate_dataset.csv": ("5d21f08f", "dataset/validate_dataset.csv",
-                             "6dd4d1e13ccd58d356e9cbda9c984ad6062e333630cd70364566d585b466ca96"),
+                             "1e329b810c21d3a3926e10867ee230d8b0c8de0dd8a83dc03bbd04cedcc3fff4"),
     "test_dataset.csv": ("5d21f08f", "dataset/test_dataset.csv",
                          "5c666eb09b874efe7004ae82961c98ec32bb41872b2170eb2813acacf2e2de73"),
-    "prompt_3_shot.txt": ("cdcd470e51c37edd83ba7df4210fabb473546439", "eval/prompt_3_shot.txt", None),
+    "prompt_3_shot.txt": ("cdcd470e51c37edd83ba7df4210fabb473546439", "eval/prompt_3_shot.txt",
+                          "8841aa3d813ed2274b308e1f92f397a74bed61e1cf54c41f7d626e5b3582b11f"),
 }
 SPLIT_FILE = {"train": "train_dataset.csv", "validate": "validate_dataset.csv", "test": "test_dataset.csv"}
 LABELS = ("TRUE", "FALSE", "UNCERTAIN")
