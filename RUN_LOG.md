@@ -61,3 +61,11 @@ Append-only record of everything executed: when, with what config, what came out
 - Next: smoke on the 70 dev items (fp32 b16 vs b1), then the Base baseline on the primary set.
 - Smoke (`mew-rung0-smoke-pw`, commit 0cc302f): ProofWriter dev OK. fp32 b1 vs b16 identical (20/20 completions, 20/20 rank preds), 0/70 parse failures, 0.60 s/item. Dev accuracy not inspected. **Fallback harness frozen at 0cc302f.**
 - Launched `mew-rung0-baseline-pw` at 0cc302f: Qwen3.5-0.8B-Base @ dc7cdfe2 on the ProofWriter primary set (n=10,158), fp32, batch 16. Expected ~1.7 h.
+
+## 2026-10-19 — Rung-1 preparation (Agentic target passed its gate)
+
+- `scripts/build_sft_data.py` run: all §4.2 checks pass. Train 4,560 / monitor 246 chains per arm (split by sha256(match_id) % 20); tokens identical per chain and in total (train 5,196,671/arm); loss tokens Treatment 2,599,770 vs Control 2,602,714 (+0.11%, tolerance 0.5%). Hashes in `data/manifests/sft_build_report.json`; per-file chain hashes in `data/manifests/chains_manifest.csv` (sha256 40e0d350…dfc8).
+- SFT jsonl not committed (chain-text provenance, as in the Ditto repos); uploaded as **private** Kaggle dataset `safiqsindha/mew-sft-v1`.
+- `scripts/train_lora.py`: §5 config (LoRA r16/α32/0.05 on the registered module regex; AdamW 2e-4 cosine, 3% warmup, wd 0; batch 4×4; 2 epochs; fp32 master weights + fp16 autocast; final checkpoint; checkpoints every 50 steps with Trainer resume). Logic: raw text + EOS. Agentic: chat template, user=prefix, assistant=continuation, enable_thinking=False, prompt-prefix property asserted. peft 0.21.2.
+- Kernel template now also runs training jobs and installs peft 0.21.2 (eval code path unchanged; baseline evals did not load peft).
+- Training smoke (`mew-rung1-smoke`): 20 steps, agentic treatment s0 and control s0, to check speed, memory and fp16 loss finiteness (§5) before real runs.

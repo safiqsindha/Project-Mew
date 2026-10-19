@@ -1,4 +1,4 @@
-"""Kaggle kernel body for Project Mew rung 0. Rendered by kaggle/push_rung0.py; not run directly.
+"""Kaggle kernel body for Project Mew (rung 0 evals and rung 1 train+eval jobs). Rendered by kaggle/push_*.py.
 
 Holds no credential: the repo, JustLogic sources and Qwen3.5 weights are all public and ungated.
 The top level never raises (failures become KERNEL_FAILED.txt). Jobs are grouped into one lane per GPU;
@@ -13,13 +13,16 @@ import traceback
 from pathlib import Path
 
 COMMIT = "__COMMIT__"
-LANES = json.loads('__LANES__')  # [[{"name":..., "args":[...]}, ...], ...] one list per GPU
+LANES = json.loads('__LANES__')  # [[{"name":..., "script":..., "args":[...]}, ...], ...] one list per GPU
 DEADLINE_H = 11.0  # stop launching new jobs after this (Kaggle hard limit is 12h)
 
 T0 = time.time()
 OUT = Path("/kaggle/working/out")
 OUT.mkdir(parents=True, exist_ok=True)
 (OUT / "kernel_started.txt").write_text(time.strftime("started %Y-%m-%d %H:%M:%S UTC\n", time.gmtime()))
+
+
+SFT = next((str(p.parent) for p in Path("/kaggle/input").rglob("treatment_train.jsonl")), "")
 
 
 def sh(cmd, **kw):
@@ -36,8 +39,10 @@ def lane(gpu, jobs, status):
         d.mkdir(parents=True, exist_ok=True)
         env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), PYTHONUNBUFFERED="1")
         t = time.time()
+        args = [x.replace("{SFT}", SFT).replace("{OUT}", str(OUT)) for x in job["args"]]
+        out = [] if job.get("no_out") else ["--out", str(d)]
         with open(d / "log.txt", "a") as log:
-            rc = subprocess.run(["python", "/tmp/mew/scripts/run_eval.py", *job["args"], "--out", str(d)],
+            rc = subprocess.run(["python", f"/tmp/mew/scripts/{job.get('script', 'run_eval.py')}", *args, *out],
                                 env=env, stdout=log, stderr=subprocess.STDOUT).returncode
         status[job["name"]] = {"rc": rc, "wall_s": round(time.time() - t, 1), "gpu": gpu}
         print(job["name"], status[job["name"]], flush=True)
@@ -45,7 +50,8 @@ def lane(gpu, jobs, status):
 
 try:
     sh("nvidia-smi")
-    sh("pip install -q transformers==5.17.0")
+    sh("pip install -q transformers==5.17.0 peft==0.21.2")
+    print("SFT data dir:", SFT or "none attached", flush=True)
     sh(f"git clone -q https://github.com/safiqsindha/Project-Mew /tmp/mew && cd /tmp/mew && git checkout -q {COMMIT}")
     head = subprocess.run("cd /tmp/mew && git rev-parse HEAD", shell=True, capture_output=True, text=True).stdout.strip()
     assert head.startswith(COMMIT), (head, COMMIT)

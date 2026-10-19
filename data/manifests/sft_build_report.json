@@ -1,0 +1,19 @@
+{
+ "control/monitor/examples": 246,
+ "control/monitor/target_tokens": 140724,
+ "control/monitor/tokens": 280209,
+ "control/train/examples": 4560,
+ "control/train/target_tokens": 2602714,
+ "control/train/tokens": 5196671,
+ "treatment/monitor/examples": 246,
+ "treatment/monitor/target_tokens": 140453,
+ "treatment/monitor/tokens": 280209,
+ "treatment/train/examples": 4560,
+ "treatment/train/target_tokens": 2599770,
+ "treatment/train/tokens": 5196671,
+ "chains_manifest_sha256": "40e0d3506e8bc20e1f85d6faca27a3f7094eba82c35d4e853f48efc8dd05dfc8",
+ "sft_treatment_train_sha256": "4dd581433ed5e680cd70d6a090138a9e1350a12d9add36a7788552a23067e0ec",
+ "sft_treatment_monitor_sha256": "7711e4d5f0279bb1f6feb8c4de960179b29d0a4e8831823d48d4ce32d155fd14",
+ "sft_control_train_sha256": "ef8d0903cd6b57ba29048f8a0d1e19d5aa90ccdfb0a91aabe73ab1d2f47e8365",
+ "sft_control_monitor_sha256": "9f17b7263b8cd7a7dc65459eb7191842be473780dadf29fa96031a423a91ee05"
+}
