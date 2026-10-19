@@ -14,3 +14,10 @@ Append-only record of everything executed: when, with what config, what came out
 - BFCL: `bfcl-eval==2026.3.23`; Qwen reports BFCL-V4 = 25.3 for Qwen3.5-0.8B (thinking).
 - No LoRA/SFT code or JustLogic/BFCL harness found in any prior repo.
 - PREREGISTRATION.md drafted (not yet locked).
+
+## 2026-10-19 — Pre-registration locked
+
+- D1 resolved: Option B (JustLogic primary n=6,927; test-only secondary; 70-item dev slice).
+- PREREGISTRATION.md locked at commit `e91e422b5631f653522728075725f69f56bc1f0b` (pushed: no).
+- Manifests: justlogic_primary.csv sha256 da56c67f…913f92; justlogic_dev.csv sha256 cad26f4c…41ded9.
+- No eval or training numbers produced.
