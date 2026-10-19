@@ -51,6 +51,8 @@ def lane(gpu, jobs, status):
 try:
     sh("nvidia-smi")
     sh("pip install -q transformers==5.17.0 peft==0.21.2")
+    # The image ships torchao 0.10, which peft 0.21 rejects at import; Mew does not use torchao.
+    sh("pip uninstall -y -q torchao")
     print("SFT data dir:", SFT or "none attached", flush=True)
     sh(f"git clone -q https://github.com/safiqsindha/Project-Mew /tmp/mew && cd /tmp/mew && git checkout -q {COMMIT}")
     head = subprocess.run("cd /tmp/mew && git rev-parse HEAD", shell=True, capture_output=True, text=True).stdout.strip()
