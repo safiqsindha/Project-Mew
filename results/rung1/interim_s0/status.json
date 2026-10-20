@@ -1,0 +1,26 @@
+{
+ "commit": "623e594c9475b56f2804d701b9a63145d11471c4",
+ "status": {
+  "train_agentic_treatment_s0": {
+   "rc": 0,
+   "wall_s": 14873.6,
+   "gpu": 0
+  },
+  "train_agentic_control_s0": {
+   "rc": 0,
+   "wall_s": 15084.1,
+   "gpu": 1
+  },
+  "eval_agentic_treatment_s0": {
+   "rc": 0,
+   "wall_s": 16682.2,
+   "gpu": 0
+  },
+  "eval_agentic_control_s0": {
+   "rc": 0,
+   "wall_s": 16791.7,
+   "gpu": 1
+  }
+ },
+ "total_wall_s": 31899.8
+}

@@ -1,4 +1,5 @@
 {
+ "scoring": "as-run",
  "n_scored": 2351,
  "n_expected": 2351,
  "complete": true,
@@ -54,6 +55,7 @@
    "parse_rate": 0.835
   }
  },
+ "turn_termination_failure_rate": 0.008920863309352519,
  "pooled_ast_acc": 0.5189281156954487,
  "parse_rate": 0.7669076988515525,
  "gate_agentic": {

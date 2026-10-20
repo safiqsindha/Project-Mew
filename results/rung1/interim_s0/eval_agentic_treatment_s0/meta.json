@@ -1,0 +1,24 @@
+{
+ "task": "bfcl",
+ "items": "all",
+ "n_items": 3475,
+ "model": "Qwen/Qwen3.5-0.8B",
+ "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+ "adapter": "/kaggle/working/out/train_agentic_treatment_s0/final_adapter",
+ "dtype": "fp32",
+ "batch_size": 8,
+ "generation": {
+  "max_new_tokens": 512,
+  "do_sample": false,
+  "stop": "eos",
+  "prompt": "model chat template, tools=frozen item tools, enable_thinking=False"
+ },
+ "model_class": "PeftModelForCausalLM",
+ "torch": "2.11.0+cu128",
+ "transformers": "5.17.0",
+ "python": "3.13.15",
+ "gpu": "Tesla T4",
+ "started_utc": "2026-10-20T04:54:50Z",
+ "wall_clock_s": 16667.2,
+ "finished_utc": "2026-10-20T09:32:38Z"
+}
