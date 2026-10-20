@@ -65,3 +65,12 @@ This file is committed before any variant below is run.
 - No new prompts beyond those listed.
 - No other models.
 - No re-gating, and no use of any of this to restart the Logic target.
+
+## Addendum 1 — 2026-10-19 (added after C1 results, before running it)
+
+C1 showed JustLogic AUC(UNCERTAIN vs rest) = 0.79, against ~0.48 on ProofWriter. A surface heuristic could produce that: UNCERTAIN statements may share fewer content words with the paragraph. To check, add **C1b**, a model-free lexical baseline on the same full sets:
+- Score each item by the fraction of the statement's lowercase alphabetic word types that also appear in the paragraph.
+- Report AUC (UNCERTAIN vs rest, higher score = less UNCERTAIN, so the score is negated), with the same bootstrap and strata.
+- Also report AUC (TRUE vs FALSE) using a negation-cue score: count of {not, no, false, incorrect, misconception, wrong, does not, doesn't} in the statement, negated. Report as is.
+
+These are diagnostics of the benchmark items, not of the model. They are run once and reported regardless of outcome.
