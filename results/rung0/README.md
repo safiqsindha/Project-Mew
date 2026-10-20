@@ -19,6 +19,17 @@ Parse failures: 0. The model answers TRUE for 83% of depth-1 items and never ans
 
 **Gate G-Logic (depths 1-2 pooled, n = 1,977): FAIL.** Accuracy .362 vs required .392 (majority .342 + 5 pp). The one-sided binomial test against .342 gives p = .035, so the result is above chance but below the pre-registered margin. Per PREREGISTRATION.md §7 the ProofWriter QDep 1-2 fallback is next.
 
+## Logic fallback: Qwen3.5-0.8B-Base on ProofWriter OWA depth-2 (Amendment A1; n = 10,158; 3-shot, greedy)
+
+| QDep | n | Accuracy | Majority-class rate | Predicted TRUE / FALSE / UNCERTAIN |
+|---|---|---|---|---|
+| 1 | 6,079 | .258 | .410 | .867 / .133 / .000 |
+| 2 | 4,079 | .391 | .440 | .831 / .169 / .000 |
+
+Parse failures: 0. **Gate (pooled, p0 = .353, threshold .403): FAIL.** Accuracy is .311, below chance; one-sided binomial p = 1.0. The same failure mode as on JustLogic: the model almost always answers TRUE and never UNCERTAIN.
+
+**Consequence (PREREGISTRATION.md §7 / A1): the Logic target does not proceed to Rung 1.** The study continues with the Agentic target only.
+
 ## Agentic: Qwen3.5-0.8B on BFCL single-turn AST (n = 2,351 scored)
 
 | Category | n | AST accuracy | Parse rate |
@@ -39,6 +50,6 @@ Parse failures: 0. The model answers TRUE for 83% of depth-1 items and never ans
 Note: the pooled parse rate is dominated by live_multiple (n = 1,053). live_parallel and live_parallel_multiple have n = 16 and 24, so their per-category numbers are very noisy.
 
 ## Integrity
-- completions.jsonl sha256: logic `50b7dd03...f3f971`, agentic `63173b03...653eda`.
+- completions.jsonl sha256: logic `50b7dd03...f3f971`, logic fallback `52945be4...`, agentic `63173b03...653eda`.
 - Wall-clock: logic 4,991 s, agentic 8,993 s.
 - smoke results (dev items only, not results) are in `../smoke/`.

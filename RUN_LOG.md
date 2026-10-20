@@ -81,3 +81,9 @@ Append-only record of everything executed: when, with what config, what came out
 
 - Kernel `mew-rung1-at0-ac0` at 623e594: GPU0 agentic/treatment/seed 0, GPU1 agentic/control/seed 0; each lane trains 570 steps then evaluates its final adapter on the frozen BFCL set. Expected ~7-7.5 h.
 - Note: Kaggle keeps outputs only when a session ends normally; a killed session is re-run from scratch with the same seed (in-session resume is via Trainer checkpoints).
+
+## 2026-10-19 — Logic fallback result (kernel `mew-rung0-baseline-pw`, harness 0cc302f)
+
+- Completed, 10,158/10,158 items, 6,174 s. Outputs in `results/rung0/baseline_logic_pw/`.
+- **Fallback gate: FAIL.** Pooled accuracy 0.311 (3,164 correct) vs threshold 0.403 (p0 0.353); one-sided binomial p = 1.0, i.e. below chance. QDep 1: 0.258 (majority 0.410); QDep 2: 0.391 (majority 0.440). Predicts TRUE 83-87%, never UNCERTAIN; 0 parse failures.
+- **Per §7/A1 the Logic target does not proceed to Rung 1.** Rung 1 continues with the Agentic target only (6 runs). Reported as a Rung-0 result: at 0.8B the base model shows no usable deductive traction on either logic benchmark under this protocol.
