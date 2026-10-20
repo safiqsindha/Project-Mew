@@ -87,3 +87,8 @@ Append-only record of everything executed: when, with what config, what came out
 - Completed, 10,158/10,158 items, 6,174 s. Outputs in `results/rung0/baseline_logic_pw/`.
 - **Fallback gate: FAIL.** Pooled accuracy 0.311 (3,164 correct) vs threshold 0.403 (p0 0.353); one-sided binomial p = 1.0, i.e. below chance. QDep 1: 0.258 (majority 0.410); QDep 2: 0.391 (majority 0.440). Predicts TRUE 83-87%, never UNCERTAIN; 0 parse failures.
 - **Per §7/A1 the Logic target does not proceed to Rung 1.** Rung 1 continues with the Agentic target only (6 runs). Reported as a Rung-0 result: at 0.8B the base model shows no usable deductive traction on either logic benchmark under this protocol.
+
+## 2026-10-19 — EXPLORATORY logic diagnostics (not confirmatory)
+
+- Plan committed before any run: `docs/exploratory/2026-10-19_logic_diagnostics_plan.md`; frozen subsample `docs/exploratory/logic_diag_subsample.csv` (sha256 5eab0fb3…98c5ca; JustLogic 100/depth, ProofWriter 300/QDep, seed 0); runner `scripts/explore_logic.py` (unchanged `mew/generate.py`, Base model, fp32). Logic gates are not re-adjudicated.
+- Kernel `mew-explore-logic`: 11 variants × 2 benchmarks (content-free N/A and empty; label-swap R0-R2; 6 shot orderings).
