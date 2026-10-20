@@ -112,7 +112,7 @@ def main():
         output_dir=str(a.out), seed=a.seed, data_seed=a.seed, **HP, max_steps=a.max_steps,
         fp16=(a.precision == "fp16"), logging_steps=10, eval_strategy="steps", eval_steps=50,
         save_strategy="steps", save_steps=50, save_total_limit=2, report_to=[], remove_unused_columns=False,
-        dataloader_num_workers=0, per_device_eval_batch_size=8, use_cpu=a.cpu,
+        dataloader_num_workers=0, per_device_eval_batch_size=2, prediction_loss_only=True, use_cpu=a.cpu,
         gradient_checkpointing=True, gradient_checkpointing_kwargs={"use_reentrant": False})
     trainer = Trainer(model=model, args=args, train_dataset=data["train"], eval_dataset=data["monitor"],
                       data_collator=Collator(tok.pad_token_id))

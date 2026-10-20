@@ -35,8 +35,14 @@ def main():
     ap.add_argument("--slug", default=None)
     a = ap.parse_args()
     if a.mode == "smoke":
-        lanes = [run_jobs("agentic", "treatment", 0, max_steps=20, evaluate=False),
-                 run_jobs("agentic", "control", 0, max_steps=20, evaluate=False)]
+        # End-to-end check: 20 steps, save, then evaluate the adapter on BFCL dev items (never scored).
+        lanes = []
+        for arm in ("treatment", "control"):
+            jobs = run_jobs("agentic", arm, 0, max_steps=20, evaluate=False)
+            jobs.append({"name": f"eval_dev_agentic_{arm}_s0",
+                         "args": [*[x if x != "all" else "dev" for x in EVAL["agentic"]],
+                                  "--adapter", f"{{OUT}}/train_agentic_{arm}_s0/final_adapter"]})
+            lanes.append(jobs)
         slug = a.slug or "mew-rung1-smoke"
     else:
         runs = [r.split(":") for r in a.runs.split(",")]
