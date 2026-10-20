@@ -37,7 +37,8 @@ def lane(gpu, jobs, status):
             continue
         d = OUT / job["name"]
         d.mkdir(parents=True, exist_ok=True)
-        env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), PYTHONUNBUFFERED="1")
+        env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), PYTHONUNBUFFERED="1",
+                   PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True")
         t = time.time()
         args = [x.replace("{SFT}", SFT).replace("{OUT}", str(OUT)) for x in job["args"]]
         out = [] if job.get("no_out") else ["--out", str(d)]

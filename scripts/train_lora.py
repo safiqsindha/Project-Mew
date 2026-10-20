@@ -31,7 +31,10 @@ LORA = dict(r=16, lora_alpha=32, lora_dropout=0.05, bias="none", task_type="CAUS
 EXPECTED_LORA_MODULES = 6 * 4 + 18 * 3 + 24 * 3  # full-attn q/k/v/o + linear-attn qkv/z/out + mlp gate/up/down
 # transformers 5.x: warmup_steps as a float in [0, 1) is the warmup ratio (3% of total steps).
 HP = dict(learning_rate=2e-4, lr_scheduler_type="cosine", warmup_steps=0.03, weight_decay=0.0,
-          per_device_train_batch_size=4, gradient_accumulation_steps=4, num_train_epochs=2)
+          # Amendment A2: micro-batch 2 x accumulation 8 (registered 4 x 4 OOMs a T4 on the fp32 logits).
+          # Same 16 examples per update; the Trainer normalises loss by target tokens across accumulation.
+          per_device_train_batch_size=2, gradient_accumulation_steps=8, num_train_epochs=2)
+assert HP["per_device_train_batch_size"] * HP["gradient_accumulation_steps"] == 16  # effective batch (§5)
 MAX_LEN = 1536
 
 

@@ -251,3 +251,18 @@ GRPO/RL; SpreadsheetBench, Cybench, physics QA; large-model fine-tunes; overseer
 
 **Unaffected:** everything for the Agentic target, which passed G-Agentic (pooled AST accuracy 0.519, parse rate 0.767).
 
+### A2 — 2026-10-19 — Training micro-batch split (memory only)
+
+**Trigger:** the 20-step training smoke test (commit `8026752`, before any real training run) ran out of memory on a 15 GB T4 at the registered per-device batch 4. The failing allocation (4.38 GiB) is the fp32 logits tensor: 4 sequences × ~1.15k tokens × the 248,320-token vocabulary.
+
+**Change to §5:** per-device batch **2** × gradient accumulation **8**, replacing 4 × 4.
+- The effective batch stays 16.
+- Each optimizer step sees the same 16 examples in the same order. The sampler and its seed are unchanged, and batches are consecutive slices of the same permutation.
+- transformers 5.17 normalises the loss by the total number of target tokens across all accumulated micro-batches (`num_items_in_batch`), so the gradient of each update is the same as under 4 × 4 up to floating-point summation order.
+
+**Also recorded:**
+- Gradient checkpointing (non-reentrant) is enabled for memory. It doesn't change the update.
+- transformers 5.x replaced `warmup_ratio` with `warmup_steps` given as a ratio; 0.03 is the registered 3% warmup.
+
+Both are applied identically to every run in both arms.
+
