@@ -95,3 +95,10 @@ Append-only record of everything executed: when, with what config, what came out
 - Exploratory kernel `mew-explore-logic` (08b190c) done: 22/22 variants complete, 4,821 s. Identity ordering reproduces Rung-0 baseline exactly. Outputs `results/exploratory/logic_diagnostics/`; analysis `scripts/explore_logic_analysis.py` → `docs/exploratory/logic_diagnostics_results.json`. Report: `docs/audit/2026-10-19_preunblinding_audit_and_logic_diagnostics.md`.
 - Pre-unblinding check A6 launched (`mew-pathcheck`): zero-init LoRA adapter vs plain model on BFCL dev items, same environment.
 - A6 path check (`mew-pathcheck`, 4546cf6): **PASS.** Zero-init LoRA adapter vs plain model on 40 BFCL dev items: 40/40 identical; both 40/40 identical to the Rung-0 smoke run made without peft (torchao present). The eval path and environment change do not affect outputs. Dev outputs in `results/smoke/pathcheck/`.
+
+## 2026-10-19 — Interim-look rule (written before any tuned result exists)
+
+- At the author's request, seed-0 BFCL numbers may be looked at as soon as `mew-rung1-at0-ac0` finishes. To keep that harmless, fixed in advance:
+  1. Seeds 1 and 2 for both arms run regardless of what seed 0 shows. No early stopping, no re-tuning, no change of metric, test, items or hyperparameters on the basis of seed 0.
+  2. Any seed-0 numbers shown are labelled **INTERIM (1 of 3 seeds), not a result**, and carry no significance claim.
+  3. The confirmatory analysis is the registered §8 test on all 3 seeds per arm, run once.
