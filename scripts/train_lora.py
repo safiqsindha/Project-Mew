@@ -29,7 +29,8 @@ LORA = dict(r=16, lora_alpha=32, lora_dropout=0.05, bias="none", task_type="CAUS
             target_modules=r"^model\.(language_model\.)?layers\.\d+\.(self_attn\.(q|k|v|o)_proj"
                            r"|linear_attn\.(in_proj_qkv|in_proj_z|out_proj)|mlp\.(gate|up|down)_proj)$")
 EXPECTED_LORA_MODULES = 6 * 4 + 18 * 3 + 24 * 3  # full-attn q/k/v/o + linear-attn qkv/z/out + mlp gate/up/down
-HP = dict(learning_rate=2e-4, lr_scheduler_type="cosine", warmup_ratio=0.03, weight_decay=0.0,
+# transformers 5.x: warmup_steps as a float in [0, 1) is the warmup ratio (3% of total steps).
+HP = dict(learning_rate=2e-4, lr_scheduler_type="cosine", warmup_steps=0.03, weight_decay=0.0,
           per_device_train_batch_size=4, gradient_accumulation_steps=4, num_train_epochs=2)
 MAX_LEN = 1536
 
@@ -81,6 +82,7 @@ def main():
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--precision", choices=["fp16", "fp32"], default="fp16")
     ap.add_argument("--max-steps", type=int, default=-1, help="smoke test only")
+    ap.add_argument("--cpu", action="store_true", help="local code-path test only")
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     set_seed(a.seed)
@@ -98,13 +100,17 @@ def main():
     matched = [n for n, _ in model.named_modules() if re.match(LORA["target_modules"], n)]
     assert len(matched) == EXPECTED_LORA_MODULES, (len(matched), matched[:5])
     model = get_peft_model(model, LoraConfig(**LORA))
+    # Gradient checkpointing: recomputes activations to fit batch 4 x ~1.3k tokens on a 15 GB T4.
+    # Changes memory/compute only, not the update (checkpointing restores the RNG state for dropout).
+    model.enable_input_require_grads()
     n_lora = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     args = TrainingArguments(
         output_dir=str(a.out), seed=a.seed, data_seed=a.seed, **HP, max_steps=a.max_steps,
         fp16=(a.precision == "fp16"), logging_steps=10, eval_strategy="steps", eval_steps=50,
         save_strategy="steps", save_steps=50, save_total_limit=2, report_to=[], remove_unused_columns=False,
-        dataloader_num_workers=0, group_by_length=False, per_device_eval_batch_size=8)
+        dataloader_num_workers=0, per_device_eval_batch_size=8, use_cpu=a.cpu,
+        gradient_checkpointing=True, gradient_checkpointing_kwargs={"use_reentrant": False})
     trainer = Trainer(model=model, args=args, train_dataset=data["train"], eval_dataset=data["monitor"],
                       data_collator=Collator(tok.pad_token_id))
 
@@ -122,6 +128,8 @@ def main():
     result = trainer.train(resume_from_checkpoint=last)
     meta["train_wall_clock_s_this_session"] = round(time.time() - t0, 1)
     meta["train_metrics"] = result.metrics
+    if torch.cuda.is_available():
+        meta["peak_cuda_mem_gib"] = round(torch.cuda.max_memory_allocated() / 2**30, 2)
     meta["log_history"] = trainer.state.log_history
     if any(not torch.isfinite(torch.tensor(h["loss"])) for h in trainer.state.log_history if "loss" in h):
         meta["NONFINITE_LOSS"] = True
