@@ -266,3 +266,20 @@ GRPO/RL; SpreadsheetBench, Cybench, physics QA; large-model fine-tunes; overseer
 
 Both are applied identically to every run in both arms.
 
+### A3 — 2026-10-20 — BFCL end-of-turn stop (harness bug found after the interim seed-0 look)
+
+**Disclosure:** this was found by inspecting the interim seed-0 BFCL outputs, so it is results-informed. It is recorded here **before** any corrected number was computed.
+
+**Bug:** §6.2 registers generation that stops at eos. For Qwen3.5-0.8B the tokenizer's eos, which is also the chat template's end-of-turn delimiter, is `<|im_end|>` (id 248046). The model repo ships no `generation_config.json`, so `generate()` used the model config's eos `<|endoftext|>` (248044) and did not stop at `<|im_end|>`.
+- The untuned model almost always emits `<|endoftext|>` straight after `<|im_end|>`: only 31/3,475 outputs continue past it.
+- The tuned seed-0 models usually do not. They keep writing invented user/tool turns and further `<tool_call>` blocks up to the 512-token cap, and the AST checker then fails these as `wrong_count`.
+- The as-run metric is therefore dominated by a stop-token mismatch rather than by the registered construct.
+
+**Correction (scoring only; generation unchanged):** every BFCL raw completion, for every checkpoint including Baseline, is truncated at the first `<|im_end|>` before tool calls are decoded. That is the registered "stop at eos" with the tokenizer's eos. It is applied offline to the saved raw completions (`mew/score.py --stop-at-im-end`). Generation for seeds 1–2 stays exactly as frozen, for comparability.
+
+**How both are used:**
+- **Primary:** the A3-corrected scoring, because it implements the registered stop rule.
+- **Always reported in full alongside it:** the as-run scoring, flagged as affected by this bug.
+- A **turn-termination failure rate** per arm (fraction of outputs with non-whitespace text after the first `<|im_end|>`) is reported as a descriptive outcome.
+- Readers can weigh the results-informed timing. Every number under both scorings is published.
+

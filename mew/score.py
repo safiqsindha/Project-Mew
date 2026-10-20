@@ -127,7 +127,8 @@ def score_proofwriter(run: Path, manifest: Path) -> dict:
     return summary
 
 
-def score_bfcl(run: Path) -> dict:
+def score_bfcl(run: Path, stop_at_im_end: bool = False) -> dict:
+    """stop_at_im_end: Amendment A3 — truncate each completion at the first <|im_end|> before decoding."""
     from bfcl_eval.constants.enums import Language
     from bfcl_eval.eval_checker.ast_eval.ast_checker import ast_checker
     from bfcl_eval.utils import is_function_calling_format_output, load_dataset_entry, load_ground_truth_entry
@@ -146,6 +147,9 @@ def score_bfcl(run: Path) -> dict:
             if it["category"] != cat or uid not in recs:
                 continue
             comp = recs[uid]["completion"]
+            ran_on = bool(comp.split("<|im_end|>", 1)[1].strip()) if "<|im_end|>" in comp else False
+            if stop_at_im_end and "<|im_end|>" in comp:
+                comp = comp.split("<|im_end|>", 1)[0]
             try:
                 calls = decode_tool_calls(comp, it["tools"])
                 parsed = is_function_calling_format_output(calls)
@@ -162,8 +166,9 @@ def score_bfcl(run: Path) -> dict:
             else:  # irrelevance: correct iff no function call is produced
                 ok, err = not parsed, None if not parsed else "irrelevance:called_function"
             rows.append({"uid": uid, "category": cat, "scored": it["scored"], "parsed": int(parsed),
-                         "correct": int(ok), "error_type": err})
-    with open(run / "scored.jsonl", "w") as fh:
+                         "correct": int(ok), "error_type": err, "ran_past_turn_end": int(ran_on)})
+    suffix = "_a3" if stop_at_im_end else ""
+    with open(run / f"scored{suffix}.jsonl", "w") as fh:
         for row in rows:
             fh.write(json.dumps(row) + "\n")
 
@@ -175,8 +180,10 @@ def score_bfcl(run: Path) -> dict:
                         "parse_rate": sum(r["parsed"] for r in rs) / len(rs)}
     sc = [r for r in rows if r["scored"]]
     n_expected = sum(it["scored"] for it in items.values())
-    summary = {"n_scored": len(sc), "n_expected": n_expected, "complete": len(sc) == n_expected,
-               "per_category": per}
+    summary = {"scoring": "A3 stop-at-<|im_end|>" if stop_at_im_end else "as-run",
+               "n_scored": len(sc), "n_expected": n_expected, "complete": len(sc) == n_expected,
+               "per_category": per,
+               "turn_termination_failure_rate": sum(r["ran_past_turn_end"] for r in rows) / max(1, len(rows))}
     if sc:
         acc = sum(r["correct"] for r in sc) / len(sc)
         pr = sum(r["parsed"] for r in sc) / len(sc)
@@ -184,7 +191,7 @@ def score_bfcl(run: Path) -> dict:
         summary["parse_rate"] = pr
         summary["gate_agentic"] = {"parse_rate": pr, "pooled_ast_acc": acc,
                                    "pass": bool(pr >= 0.10 and acc >= 0.05)}
-    (run / "summary.json").write_text(json.dumps(summary, indent=1))
+    (run / f"summary{suffix}.json").write_text(json.dumps(summary, indent=1))
     return summary
 
 
@@ -193,6 +200,7 @@ def main():
     ap.add_argument("task", choices=["justlogic", "proofwriter", "bfcl"])
     ap.add_argument("run", type=Path)
     ap.add_argument("--manifest", type=Path, default=ROOT / "data/manifests/justlogic_primary.csv")
+    ap.add_argument("--stop-at-im-end", action="store_true", help="BFCL only: Amendment A3 scoring")
     a = ap.parse_args()
     if a.task == "justlogic":
         s = score_justlogic(a.run, a.manifest)
@@ -200,7 +208,7 @@ def main():
         m = a.manifest if a.manifest.name.startswith("proofwriter") else ROOT / "data/manifests/proofwriter_primary.csv"
         s = score_proofwriter(a.run, m)
     else:
-        s = score_bfcl(a.run)
+        s = score_bfcl(a.run, stop_at_im_end=a.stop_at_im_end)
     print(json.dumps(s, indent=1))
 
 

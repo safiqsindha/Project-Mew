@@ -102,3 +102,10 @@ Append-only record of everything executed: when, with what config, what came out
   1. Seeds 1 and 2 for both arms run regardless of what seed 0 shows. No early stopping, no re-tuning, no change of metric, test, items or hyperparameters on the basis of seed 0.
   2. Any seed-0 numbers shown are labelled **INTERIM (1 of 3 seeds), not a result**, and carry no significance claim.
   3. The confirmatory analysis is the registered §8 test on all 3 seeds per arm, run once.
+
+## 2026-10-20 — Seed-0 session result (INTERIM, 1 of 3 seeds) and Amendment A3
+
+- `mew-rung1-at0-ac0` (623e594) finished: both arms trained 570 steps (peak 10.96 GiB, finite losses; final monitor loss Treatment 0.0533, Control 0.0773) and were evaluated on all 3,475 BFCL items. Seed-1 session `mew-rung1-at1-ac1` launched **before** seed 0 was scored, per the interim-look rule.
+- As-run interim (registered scorer): pooled AST accuracy Baseline 0.519, Control 0.054, Treatment 0.124; parse rate 0.767 / 0.985 / 0.979. Inspection: tuned models emit `<|im_end|>` and keep generating invented user/tool turns to the 512-token cap (Treatment 99.7%, Control 92.2% hit the cap); errors are dominated by `wrong_count`.
+- Root cause: no `generation_config.json` in the model repo, so generation stopped only at `<|endoftext|>` (model-config eos) rather than `<|im_end|>` (tokenizer eos, registered "stop at eos"). Untuned model rarely runs past `<|im_end|>` (31/3,475), so smoke and A6 checks could not reveal it.
+- **Amendment A3** appended and committed **before** computing any corrected number: BFCL scoring truncates at the first `<|im_end|>` for every checkpoint (offline, raw completions unchanged); A3 scoring is primary, as-run always reported alongside; turn-termination failure rate reported per arm. Disclosed as results-informed.
