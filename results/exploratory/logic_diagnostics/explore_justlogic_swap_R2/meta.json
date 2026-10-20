@@ -1,0 +1,21 @@
+{
+ "EXPLORATORY": true,
+ "benchmark": "justlogic",
+ "variant": "swap_R2",
+ "options": {
+  "A": " A",
+  "B": " B",
+  "C": " C"
+ },
+ "key_to_meaning": {
+  "A": "UNCERTAIN",
+  "B": "TRUE",
+  "C": "FALSE"
+ },
+ "n": 700,
+ "model": "Qwen/Qwen3.5-0.8B-Base",
+ "revision": "dc7cdfe2ee4154fa7e30f5b51ca41bfa40174e68",
+ "dtype": "fp32",
+ "batch_size": 16,
+ "template_sha256": "e06c708aa038729e511bfa9b7147955202e227e59f84a8ff37a873fc70998690"
+}

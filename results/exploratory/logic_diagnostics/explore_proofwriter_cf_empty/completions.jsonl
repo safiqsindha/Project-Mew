@@ -1,0 +1,1 @@
+{"uid": "cf_empty", "prompt_sha256": "a2631c5d25f42d322dc6f281bbc368a9a8f633b4082d61bd7c4eb8f3436155af", "completion": " TRUE\n-----\n\nParagraph: The cat", "n_new_tokens": 8, "option_logprobs": {"UNCERTAIN": -1.789086103439331, "TRUE": -1.187963604927063, "FALSE": -1.707372784614563}}

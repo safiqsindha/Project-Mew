@@ -92,3 +92,5 @@ Append-only record of everything executed: when, with what config, what came out
 
 - Plan committed before any run: `docs/exploratory/2026-10-19_logic_diagnostics_plan.md`; frozen subsample `docs/exploratory/logic_diag_subsample.csv` (sha256 5eab0fb3…98c5ca; JustLogic 100/depth, ProofWriter 300/QDep, seed 0); runner `scripts/explore_logic.py` (unchanged `mew/generate.py`, Base model, fp32). Logic gates are not re-adjudicated.
 - Kernel `mew-explore-logic`: 11 variants × 2 benchmarks (content-free N/A and empty; label-swap R0-R2; 6 shot orderings).
+- Exploratory kernel `mew-explore-logic` (08b190c) done: 22/22 variants complete, 4,821 s. Identity ordering reproduces Rung-0 baseline exactly. Outputs `results/exploratory/logic_diagnostics/`; analysis `scripts/explore_logic_analysis.py` → `docs/exploratory/logic_diagnostics_results.json`. Report: `docs/audit/2026-10-19_preunblinding_audit_and_logic_diagnostics.md`.
+- Pre-unblinding check A6 launched (`mew-pathcheck`): zero-init LoRA adapter vs plain model on BFCL dev items, same environment.

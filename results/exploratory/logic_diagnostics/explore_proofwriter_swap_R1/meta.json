@@ -1,0 +1,21 @@
+{
+ "EXPLORATORY": true,
+ "benchmark": "proofwriter",
+ "variant": "swap_R1",
+ "options": {
+  "A": " A",
+  "B": " B",
+  "C": " C"
+ },
+ "key_to_meaning": {
+  "A": "FALSE",
+  "B": "UNCERTAIN",
+  "C": "TRUE"
+ },
+ "n": 600,
+ "model": "Qwen/Qwen3.5-0.8B-Base",
+ "revision": "dc7cdfe2ee4154fa7e30f5b51ca41bfa40174e68",
+ "dtype": "fp32",
+ "batch_size": 16,
+ "template_sha256": "48c66a031791a66a18f0e8d084b7e4d83674bb4532f1dff1d0f6fe37a209a3c3"
+}

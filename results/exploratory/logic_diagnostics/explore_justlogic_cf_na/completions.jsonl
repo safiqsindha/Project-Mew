@@ -1,0 +1,1 @@
+{"uid": "cf_na", "prompt_sha256": "bfef5994005b75908d1e4f2773009173704b4f9d8e61c4d6d2b274fee960076b", "completion": " UNCERTAIN\n-----\n\nParagraph:", "n_new_tokens": 8, "option_logprobs": {"UNCERTAIN": -0.7152719497680664, "TRUE": -1.2470853328704834, "FALSE": -2.032041311264038}}
