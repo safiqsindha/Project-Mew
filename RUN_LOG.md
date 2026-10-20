@@ -75,3 +75,9 @@ Append-only record of everything executed: when, with what config, what came out
 - Local CPU code-path test (transformers 5.17.0, peft 0.21.2, torch 2.14.1): 1 step agentic/treatment/s0 completed — 150 LoRA modules, 10,223,616 trainable params, monitor eval and adapter save OK. Not a result.
 - Training smoke v4 (8026752) OOM on T4 at micro-batch 4 (fp32 logits, 4.38 GiB). **Amendment A2:** micro-batch 2 × accumulation 8 (effective 16 unchanged; token-normalised loss → same update). Kernel also sets `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.
 - Training smoke v5 (5cccb17): 20 training steps OK on T4 (~24-25 s/step at 2×8 → ~4 h per 570-step run), then OOM in the monitor-loss eval (batch 8 logits, 9.17 GiB). Fix: monitor eval batch 2 with `prediction_loss_only=True` (monitoring only; no effect on training or evaluation). Smoke now runs end to end: train 20 steps → save → evaluate adapter on BFCL dev items.
+- Training smoke v6 (623e594): **end-to-end OK.** 20 steps per arm, 150 LoRA modules, peak CUDA memory 10.83 GiB, fp16 losses finite (§5 smoke check passed → fp16 kept), ~25-30 s/step; adapters saved, reloaded and evaluated on 40 BFCL dev items (not scored). **Training harness frozen at 623e594.**
+
+## 2026-10-19 — Rung 1, Agentic target: session 1
+
+- Kernel `mew-rung1-at0-ac0` at 623e594: GPU0 agentic/treatment/seed 0, GPU1 agentic/control/seed 0; each lane trains 570 steps then evaluates its final adapter on the frozen BFCL set. Expected ~7-7.5 h.
+- Note: Kaggle keeps outputs only when a session ends normally; a killed session is re-run from scratch with the same seed (in-session resume is via Trainer checkpoints).
