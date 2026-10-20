@@ -28,7 +28,7 @@ def run_jobs(target, arm, seed, max_steps=None, evaluate=True):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["smoke", "runs"], required=True)
+    ap.add_argument("--mode", choices=["smoke", "runs", "pathcheck"], required=True)
     ap.add_argument("--runs", default="", help="comma list target:arm:seed; lanes alternate GPUs")
     ap.add_argument("--commit", required=True)
     ap.add_argument("--build", type=Path, required=True)
@@ -44,6 +44,12 @@ def main():
                                   "--adapter", f"{{OUT}}/train_agentic_{arm}_s0/final_adapter"]})
             lanes.append(jobs)
         slug = a.slug or "mew-rung1-smoke"
+    elif a.mode == "pathcheck":  # zero adapter vs plain model on BFCL dev items (pre-unblinding check)
+        dev = [x if x != "all" else "dev" for x in EVAL["agentic"]]
+        lanes = [[{"name": "zero_adapter_agentic", "script": "make_zero_adapter.py", "args": ["--target", "agentic"]},
+                  {"name": "eval_dev_zero_adapter", "args": [*dev, "--adapter", "{OUT}/zero_adapter_agentic/final_adapter"]}],
+                 [{"name": "eval_dev_plain", "args": dev}]]
+        slug = a.slug or "mew-pathcheck"
     else:
         runs = [r.split(":") for r in a.runs.split(",")]
         lanes = [[], []]
