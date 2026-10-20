@@ -45,7 +45,7 @@ No tuned-model BFCL result had been produced or inspected when this was written.
 
 **A5. BFCL denominator.** All 2,351 scored items (§6.2; `mew/score.py`). An item that fails to parse counts as incorrect. Accuracy conditional on parse will be reported as descriptive only.
 
-**A6 (added). Adapter eval path.** Tuned arms are evaluated through a PEFT-wrapped model, and the baseline through the plain model. Check: an untrained (B = 0) adapter vs the plain model on the 40 BFCL dev items, in the same kernel environment (`mew-pathcheck`). **Result: pending.**
+**A6 (added). Adapter eval path.** Tuned arms are evaluated through a PEFT-wrapped model, and the baseline through the plain model. Check: an untrained (B = 0) adapter vs the plain model on the 40 BFCL dev items, in the same kernel environment (`mew-pathcheck`, commit 4546cf6). **Result: PASS.** All 40/40 completions are identical between zero-adapter and plain model. Both are also identical (40/40) to the Rung-0 smoke baseline produced in the original environment (no peft, torchao present).
 
 ---
 
@@ -148,8 +148,8 @@ Caveat: the UNCERTAIN definition line is always listed third, so "avoids the mea
 
 ## Blocks to trusting a BFCL result
 
-1. **Adapter-path equivalence (A6):** pending. If zero-adapter ≠ plain model on the dev items, H1 (Treatment vs untuned Baseline) is confounded by the eval path. H2 isn't, because both tuned arms use the same path.
+1. ~~Adapter-path equivalence (A6)~~ — **resolved:** the zero-adapter and plain-model paths give identical outputs (40/40).
 2. **Control is "incoherent", not just "unordered" (A1):** step content no longer fits its turn labels, and the target type-mix shifts slightly. A Treatment > Control result could reflect Control *hurting* rather than structure *helping*. All three pairwise gaps (T−B, C−B, T−C) must be reported together.
 3. **Only seed 0 is in progress.** H2 needs all 3 seeds per arm, and no confirmatory statement can be made before that.
-4. **Environment drift:** the tuned-arm eval kernels install peft 0.21.2 and remove the image's torchao, which the Rung-0 baseline eval did not. A6 covers this for the dev items.
+4. ~~Environment drift~~ — **resolved for the eval path:** with peft installed and torchao removed, outputs match the original Rung-0 environment 40/40 on the dev items.
 5. **Amendment A2** (micro-batch 2 × 8) applies to all tuned runs and has to be cited in any write-up.
