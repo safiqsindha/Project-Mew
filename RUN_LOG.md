@@ -115,3 +115,8 @@ Append-only record of everything executed: when, with what config, what came out
 
 - `mew-rung1-at1-ac1` (623e594) complete: both arms 570 steps, finite losses, final monitor loss Treatment 0.0532 / Control 0.0767; BFCL 3,475/3,475 per arm. Seed-2 session `mew-rung1-at2-ac2` launched at 01:13Z **before** seed 1 was scored.
 - A3 pooled AST: Control 0.476, Treatment 0.535 (Baseline 0.519). Seed-matched gaps s1: T−B +1.6 pp, C−B −4.3 pp, T−C +6.0 pp (s0: +0.6 / −14.7 / +15.2). As-run: Control 0.063, Treatment 0.257. Saved in `results/rung1/interim_s1/` (INTERIM).
+
+## 2026-10-21 — Seed-2 session complete; confirmatory analysis script committed before running
+
+- `mew-rung1-at2-ac2` (623e594) complete: all four jobs rc 0, BFCL 3,475/3,475 per arm. Raw outputs in `results/rung1/interim_s2/` (committed unscored).
+- `scripts/confirmatory_analysis.py` implements §8 as amended (A2/A3): hierarchical paired bootstrap (10,000 reps, seed 20261019, seeds resampled within arm, items within BFCL category), one-sided p, Holm over {H1_Agentic, H2_Agentic}, H2 seed-pair condition, registered null/harm definitions; A3 primary, as-run alongside. Committed before its single run.
