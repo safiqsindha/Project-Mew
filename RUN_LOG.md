@@ -110,3 +110,8 @@ Append-only record of everything executed: when, with what config, what came out
 - Root cause: no `generation_config.json` in the model repo, so generation stopped only at `<|endoftext|>` (model-config eos) rather than `<|im_end|>` (tokenizer eos, registered "stop at eos"). Untuned model rarely runs past `<|im_end|>` (31/3,475), so smoke and A6 checks could not reveal it.
 - **Amendment A3** appended and committed **before** computing any corrected number: BFCL scoring truncates at the first `<|im_end|>` for every checkpoint (offline, raw completions unchanged); A3 scoring is primary, as-run always reported alongside; turn-termination failure rate reported per arm. Disclosed as results-informed.
 - Interim seed-0, A3 scoring (computed after A3 was committed): pooled AST Baseline 0.519, Control 0.372, Treatment 0.524. Treatment vs Baseline net +13 items (+0.6 pp); Control vs Baseline −345 (−14.7 pp); Treatment vs Control +358 (+15.2 pp). Irrelevance accuracy collapses in both tuned arms. Saved in `results/rung1/interim_s0/` (labelled INTERIM). Baseline A3 rescoring saved alongside as-run in `results/rung0/baseline_agentic/`.
+
+## 2026-10-21 — Seed-1 session (INTERIM, 2 of 3 seeds)
+
+- `mew-rung1-at1-ac1` (623e594) complete: both arms 570 steps, finite losses, final monitor loss Treatment 0.0532 / Control 0.0767; BFCL 3,475/3,475 per arm. Seed-2 session `mew-rung1-at2-ac2` launched at 01:13Z **before** seed 1 was scored.
+- A3 pooled AST: Control 0.476, Treatment 0.535 (Baseline 0.519). Seed-matched gaps s1: T−B +1.6 pp, C−B −4.3 pp, T−C +6.0 pp (s0: +0.6 / −14.7 / +15.2). As-run: Control 0.063, Treatment 0.257. Saved in `results/rung1/interim_s1/` (INTERIM).
