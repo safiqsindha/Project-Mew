@@ -1,0 +1,66 @@
+{
+ "scoring": "A3 stop-at-<|im_end|>",
+ "n_scored": 2351,
+ "n_expected": 2351,
+ "complete": true,
+ "per_category": {
+  "irrelevance": {
+   "n": 240,
+   "acc": 0.0875,
+   "parse_rate": 0.9125
+  },
+  "live_irrelevance": {
+   "n": 884,
+   "acc": 0.11425339366515837,
+   "parse_rate": 0.8857466063348416
+  },
+  "live_multiple": {
+   "n": 1053,
+   "acc": 0.32668566001899335,
+   "parse_rate": 0.9867046533713201
+  },
+  "live_parallel": {
+   "n": 16,
+   "acc": 0.5625,
+   "parse_rate": 0.9375
+  },
+  "live_parallel_multiple": {
+   "n": 24,
+   "acc": 0.25,
+   "parse_rate": 1.0
+  },
+  "live_simple": {
+   "n": 258,
+   "acc": 0.39147286821705424,
+   "parse_rate": 0.9689922480620154
+  },
+  "multiple": {
+   "n": 200,
+   "acc": 0.49,
+   "parse_rate": 0.985
+  },
+  "parallel": {
+   "n": 200,
+   "acc": 0.56,
+   "parse_rate": 0.995
+  },
+  "parallel_multiple": {
+   "n": 200,
+   "acc": 0.375,
+   "parse_rate": 1.0
+  },
+  "simple_python": {
+   "n": 400,
+   "acc": 0.695,
+   "parse_rate": 1.0
+  }
+ },
+ "turn_termination_failure_rate": 0.35050359712230217,
+ "pooled_ast_acc": 0.4351339855380689,
+ "parse_rate": 0.9885155253083794,
+ "gate_agentic": {
+  "parse_rate": 0.9885155253083794,
+  "pooled_ast_acc": 0.4351339855380689,
+  "pass": true
+ }
+}

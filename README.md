@@ -4,7 +4,7 @@
 
 This is a small, pre-registered fine-tuning study on `Qwen3.5-0.8B`. The expected effect is small (~0.3–1.4 pp). The value of the work is in the controls, not the effect size.
 
-> **Status (2026-10-19):** Rung 0 done. The Agentic target passed its gate. The Logic target failed on JustLogic and on the ProofWriter fallback, so it stops at Rung 0. Rung-1 training for the Agentic target is under way. See [results/rung0](results/rung0/README.md).
+> **Status (2026-10-21): Rung 1 complete.** Agentic target, 3 seeds per arm: **headline claim not supported.** Ordered chains (Treatment) are level with the untuned model (+1.2 pp, n.s.). Shuffled chains (Control) degrade it (−9.1 pp), so Treatment > Control (+10.3 pp) holds, but because Control is damaged, not because Treatment helps. Logic target stopped at Rung 0. See [results/rung1](results/rung1/README.md).
 
 ---
 
@@ -52,7 +52,8 @@ The Base→post-trained swap between targets is deliberate. A base model has nev
 - [x] [Amendment A1](PREREGISTRATION.md#amendments): the registered ProofWriter fallback file was degenerate (every QDep 1–2 answer was Unknown), so it was replaced by the official release before use
 - [x] [Amendment A2](PREREGISTRATION.md#amendments): training micro-batch 2×8 (effective batch 16 unchanged) to fit a T4
 - [x] **Rung 0:** baseline gates. Agentic **passed** (BFCL AST accuracy .519). Logic **failed** (JustLogic .362 at depths 1–2; ProofWriter fallback .311, below chance). Logic stops here.
-- [ ] **Rung 1:** LoRA training, Control vs Treatment × 3 seeds, Agentic target *(in progress)*
+- [x] [Amendment A3](PREREGISTRATION.md#amendments): BFCL scoring stops at `<|im_end|>` (harness bug found at the interim look; both scorings reported)
+- [x] **Rung 1:** Agentic, 3 seeds per arm. H1 (Treatment > Baseline) not supported; H2 (Treatment > Control) supported; headline claim **not supported** ([results](results/rung1/README.md))
 - [ ] **Phase 3:** analysis and write-up
 
 Out of scope for this repo: RL/GRPO, larger models, other benchmarks, new constraint types.
