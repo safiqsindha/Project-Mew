@@ -54,7 +54,7 @@ The Base→post-trained swap between targets is deliberate. A base model has nev
 - [x] **Rung 0:** baseline gates. Agentic **passed** (BFCL AST accuracy .519). Logic **failed** (JustLogic .362 at depths 1–2; ProofWriter fallback .311, below chance). Logic stops here.
 - [x] [Amendment A3](PREREGISTRATION.md#amendments): BFCL scoring stops at `<|im_end|>` (harness bug found at the interim look; both scorings reported)
 - [x] **Rung 1:** Agentic, 3 seeds per arm. H1 (Treatment > Baseline) not supported; H2 (Treatment > Control) supported; headline claim **not supported** ([results](results/rung1/README.md))
-- [ ] **Phase 3:** analysis and write-up
+- [x] **Phase 3:** analysis and write-up: [results/rung1/README.md](results/rung1/README.md); pre-unblinding audit and exploratory logic diagnostics in [docs/audit](docs/audit/2026-10-19_preunblinding_audit_and_logic_diagnostics.md)
 
 Out of scope for this repo: RL/GRPO, larger models, other benchmarks, new constraint types.
 
@@ -69,6 +69,12 @@ kaggle/                   kernel template + renderer (all GPU work runs on Kaggl
 data/manifests/           frozen JustLogic item lists (hashed)
 data/frozen/              frozen BFCL items and tool schemas (hashed)
 requirements-score.lock   offline scoring environment (bfcl-eval 2026.3.23)
+results/rung0/            baseline (untuned) results and gate decisions, with raw completions
+results/rung1/            per-seed tuned results (interim_s0..s2) and the confirmatory analysis (confirmatory.json)
+results/exploratory/      exploratory logic diagnostics (not confirmatory)
+results/smoke/            harness smoke tests on dev items only (not results)
+docs/audit/               pre-unblinding audit + exploratory diagnostics report
+docs/exploratory/         dated exploratory plans (committed before running)
 ```
 
 ## Reproducing
